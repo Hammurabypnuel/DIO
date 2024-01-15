@@ -1,0 +1,77 @@
+// Veiculo.cs
+public class Veiculo
+{
+    public string Placa { get; set; }
+    public DateTime Entrada { get; set; }
+}
+
+// Estacionamento.cs
+using System;
+using System.Collections.Generic;
+
+public class Estacionamento
+{
+    private List<Veiculo> veiculosEstacionados = new List<Veiculo>();
+
+    public void AdicionarVeiculo(Veiculo veiculo)
+    {
+        veiculosEstacionados.Add(veiculo);
+        Console.WriteLine($"Veículo {veiculo.Placa} adicionado ao estacionamento.");
+    }
+
+    public void RemoverVeiculo(string placa)
+    {
+        var veiculo = veiculosEstacionados.Find(v => v.Placa == placa);
+
+        if (veiculo != null)
+        {
+            var horasEstacionado = (DateTime.Now - veiculo.Entrada).TotalHours;
+            var valorCobrado = CalcularValorEstacionamento(horasEstacionado);
+
+            Console.WriteLine($"Veículo {veiculo.Placa} removido do estacionamento. Valor cobrado: R${valorCobrado:F2}");
+            veiculosEstacionados.Remove(veiculo);
+        }
+        else
+        {
+            Console.WriteLine($"Veículo com placa {placa} não encontrado no estacionamento.");
+        }
+    }
+
+    public void ListarVeiculos()
+    {
+        Console.WriteLine("Veículos estacionados:");
+
+        foreach (var veiculo in veiculosEstacionados)
+        {
+            Console.WriteLine($"- Placa: {veiculo.Placa}, Entrada: {veiculo.Entrada}");
+        }
+    }
+
+    private double CalcularValorEstacionamento(double horas)
+    {
+        // Lógica para calcular o valor cobrado pelo estacionamento
+        // Exemplo: R$ 5,00 por hora
+        return horas * 5.00;
+    }
+}
+
+// Program.cs
+class Program
+{
+    static void Main(string[] args)
+    {
+        Estacionamento estacionamento = new Estacionamento();
+
+        Veiculo carro = new Veiculo { Placa = "ABC123", Entrada = DateTime.Now };
+        estacionamento.AdicionarVeiculo(carro);
+
+        Veiculo moto = new Veiculo { Placa = "XYZ789", Entrada = DateTime.Now };
+        estacionamento.AdicionarVeiculo(moto);
+
+        estacionamento.ListarVeiculos();
+
+        estacionamento.RemoverVeiculo("ABC123");
+
+        estacionamento.ListarVeiculos();
+    }
+}
